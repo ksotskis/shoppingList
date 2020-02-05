@@ -9,9 +9,10 @@ public class ProductService {
     private ProductInMemoryRepository repository = new ProductInMemoryRepository();
     private ProductValidationService validationService = new ProductValidationService();
 
-    public void createProduct(Product product) {
+    public Product createProduct(Product product) {
         validationService.validate(product);
         repository.insert(product);
+        return product;
     }
 
     public Product findProductByID(Long id) {
