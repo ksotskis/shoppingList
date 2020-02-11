@@ -1,11 +1,13 @@
 package com.javaguru.shoppinglist;
 
+import com.javaguru.shoppinglist.domain.Product;
+
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-class ShoppingListApplication {
+class ShoppingListApplicationOrigin {
 
     public static void main(String[] args) {
         Map<Long, Product> productRepository = new HashMap<>();
@@ -50,12 +52,10 @@ class ShoppingListApplication {
                         product.setId(productIdSequence);
                         productRepository.put(productIdSequence, product);
                         productIdSequence++;
-                        System.out.println("Result: " + product.getId());
                     case 2:
                         System.out.println("Enter product id: ");
                         long id = scanner.nextLong();
-                        Product findProductResult = productRepository.get(id);
-                        System.out.println(findProductResult);
+                        System.out.println(productRepository.get(id));
                     case 3:
                         return;
                 }
