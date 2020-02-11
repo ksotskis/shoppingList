@@ -15,6 +15,8 @@ public class ProductValidationService {
         validationRules.add(new ProductDiscountValidationRule());
     }
 
+
+    // validation just fail and throw exception??? but how you notify user about validation error?
     public void validate(Product product) {
         validationRules.forEach(s -> s.validate(product));
     }
