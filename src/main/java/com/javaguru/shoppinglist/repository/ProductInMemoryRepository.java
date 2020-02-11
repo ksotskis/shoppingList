@@ -5,6 +5,9 @@ import com.javaguru.shoppinglist.domain.Product;
 import java.util.HashMap;
 import java.util.Map;
 
+// Where is Database interface???
+// Please define Database interface and put there database contract
+
 public class ProductInMemoryRepository {
 
     private Long productIdSequence = 0L;
