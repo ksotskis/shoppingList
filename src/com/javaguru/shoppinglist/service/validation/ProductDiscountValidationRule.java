@@ -3,9 +3,7 @@ package com.javaguru.shoppinglist.service.validation;
 import com.javaguru.shoppinglist.domain.Product;
 import com.javaguru.shoppinglist.service.validation.ProductValidationException;
 import com.javaguru.shoppinglist.service.validation.ProductValidationRule;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ProductDiscountValidationRule implements ProductValidationRule {
 
     @Override

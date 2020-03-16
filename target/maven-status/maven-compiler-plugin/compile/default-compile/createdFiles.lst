@@ -1,0 +1,11 @@
+com\javaguru\shoppinglist\service\validation\ProductValidationRule.class
+com\javaguru\shoppinglist\service\validation\ProductValidationService.class
+com\javaguru\shoppinglist\service\validation\ProductNameValidationRule.class
+com\javaguru\shoppinglist\domain\Product.class
+com\javaguru\shoppinglist\service\validation\ProductValidationException.class
+com\javaguru\shoppinglist\repository\ProductInMemoryRepository.class
+com\javaguru\shoppinglist\service\validation\ProductDiscountValidationRule.class
+com\javaguru\shoppinglist\ShoppingListApplicationOrigin.class
+com\javaguru\shoppinglist\service\ProductService.class
+com\javaguru\shoppinglist\console\ConsoleUI.class
+com\javaguru\shoppinglist\service\validation\ProductPriceValidationRule.class

@@ -1,12 +1,10 @@
 package com.javaguru.shoppinglist.repository;
 
 import com.javaguru.shoppinglist.domain.Product;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class ProductInMemoryRepository {
 
     private Long productIdSequence = 0L;
