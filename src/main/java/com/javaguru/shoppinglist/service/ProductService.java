@@ -1,31 +1,32 @@
 package com.javaguru.shoppinglist.service;
 
-import com.javaguru.shoppinglist.service.validation.ProductValidationService;
 import com.javaguru.shoppinglist.domain.Product;
-import com.javaguru.shoppinglist.repository.ProductInMemoryRepository;
+import com.javaguru.shoppinglist.repository.ProductRepository;
+import com.javaguru.shoppinglist.service.validation.ProductValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductService {
 
-    private ProductInMemoryRepository repository;
-    private ProductValidationService validationService;
+    private final ProductRepository repository;
+    private final ProductValidationService validationService;
 
     @Autowired
-    public ProductService(ProductInMemoryRepository repository,
+    public ProductService(ProductRepository repository,
                           ProductValidationService validationService) {
         this.repository = repository;
         this.validationService = validationService;
     }
 
-    public Product createProduct(Product product) {
+    public Long createProduct(Product product) {
         validationService.validate(product);
-        repository.insert(product);
-        return product;
+        Product createdProduct = repository.save(product);
+        return createdProduct.getId();
     }
 
-    public Product findProductByID(Long id) {
-        return repository.findProductById(id);
+    public Product findProductById(Long id) {
+        return repository.findProductById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found, id: " + id));
     }
 }
