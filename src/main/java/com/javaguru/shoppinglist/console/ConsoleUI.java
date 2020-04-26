@@ -2,57 +2,65 @@ package com.javaguru.shoppinglist.console;
 
 import com.javaguru.shoppinglist.domain.Product;
 import com.javaguru.shoppinglist.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
+@Component
 public class ConsoleUI {
 
-    private ProductService productService = new ProductService();
+    private final ProductService productService;
+
+    @Autowired
+    public ConsoleUI(ProductService productService) {
+        this.productService = productService;
+    }
 
     public void execute() {
         while (true) {
             Scanner scanner = new Scanner(System.in);
             try {
-                System.out.println("1. Create product");
-                System.out.println("2. Find product by id");
+                System.out.println("1. Create task");
+                System.out.println("2. Find task by id");
                 System.out.println("3. Exit");
-                Integer userInput = Integer.valueOf(scanner.nextLine());
+                int userInput = scanner.nextInt();
                 switch (userInput) {
                     case 1:
-                        System.out.println("Enter product name: ");
-                        String name = scanner.nextLine();
-                        System.out.println("Enter product price: ");
-                        BigDecimal price = new BigDecimal(scanner.nextLine());
-                        System.out.println("Enter product category: ");
-                        String category = scanner.nextLine();
-                        System.out.println("Enter product discount: ");
-                        int discount = Integer.parseInt(scanner.nextLine());
-                        System.out.println("Enter product description: ");
-                        String description = scanner.nextLine();
-                        Product product = new Product();
-                        product.setName(name);
-                        product.setPrice(price);
-                        product.setCategory(category);
-                        product.setDiscount(discount);
-                        product.setDescription(description);
-                        productService.createProduct(product);
+                        createProduct();
+                        break;
                     case 2:
-                        System.out.println("Enter product id: ");
-                        long id = scanner.nextLong();
-                        productService.findProductByID(id);
-                        Product findProductResult = productService.findProductByID(id);
-                        System.out.println(findProductResult);
+                        findProduct();
                         break;
                     case 3:
                         return;
                 }
             } catch (Exception e) {
-                System.out.println("Error! Please try again.");  // write info about error happened
+                e.printStackTrace();
             }
         }
     }
-}
 
+    private void createProduct() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter task name: ");
+        String name = scanner.nextLine();
+        System.out.println("Enter task description: ");
+        String description = scanner.nextLine();
+
+        Product product = new Product();
+        product.setName(name);
+        product.setDescription(description);
+
+        Long id = productService.createProduct(product);
+        System.out.println("Result: " + id);
+    }
+
+    private void findProduct() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter task id: ");
+        Long id = scanner.nextLong();
+        Product product = productService.findProductById(id);
+        System.out.println(product);
+    }
+}
