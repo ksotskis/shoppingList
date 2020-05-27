@@ -1,23 +1,21 @@
 package com.javaguru.shoppinglist.service.validation;
 
-import com.javaguru.shoppinglist.domain.Product;
+import com.javaguru.shoppinglist.dto.ProductDto;
+import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
+@Service
 public class ProductValidationService {
 
-    private Set<ProductValidationRule> validationRules = new HashSet<>();
+    private final Set<ProductValidationRule> validationRules;
 
-    public ProductValidationService() {
-        validationRules.add(new ProductNameValidationRule());
-        validationRules.add(new ProductPriceValidationRule());
-        validationRules.add(new ProductDiscountValidationRule());
+    public ProductValidationService(Set<ProductValidationRule> validationRules) {
+        this.validationRules = validationRules;
     }
 
-
-    // validation just fail and throw exception??? but how you notify user about validation error?
-    public void validate(Product product) {
-        validationRules.forEach(s -> s.validate(product));
+    public void validate(ProductDto productDto) {
+        validationRules.forEach(s -> s.validate(productDto));
     }
+
 }

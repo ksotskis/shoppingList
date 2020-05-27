@@ -1,16 +1,56 @@
 package com.javaguru.shoppinglist.domain;
 
-import java.math.BigDecimal;
+import javax.persistence.*;
+import java.util.Objects;
 
+@Entity
+@Table(name = "products")
 public class Product {
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
-    private BigDecimal price;
-
-    private String category;
-    private int discount;
+    @Column(name = "description")
     private String description;
+    @Column(name = "customer_id")
+    private Long customerId;
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", userId='" + customerId + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id) &&
+                Objects.equals(name, product.name) &&
+                Objects.equals(description, product.description) &&
+                Objects.equals(customerId, product.customerId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, customerId);
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 
     public Long getId() {
         return id;
@@ -28,47 +68,12 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public int getDiscount() {
-        return discount;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setDiscount(int discount) {
-        this.discount = discount;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", category='" + category + '\'' +
-                ", discount=" + discount +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

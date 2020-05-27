@@ -2,23 +2,66 @@ package com.javaguru.shoppinglist.service;
 
 import com.javaguru.shoppinglist.service.validation.ProductValidationService;
 import com.javaguru.shoppinglist.domain.Product;
-import com.javaguru.shoppinglist.repository.ProductInMemoryRepository;
+import com.javaguru.shoppinglist.mapper.ProductConverter;
+import com.javaguru.shoppinglist.dto.ProductDto;
+import com.javaguru.shoppinglist.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
+@Service
 public class ProductService {
 
-    private ProductInMemoryRepository repository = new ProductInMemoryRepository();
-    private ProductValidationService validationService = new ProductValidationService();
+    private final ProductRepository repository;
+    private final ProductValidationService validationService;
+    private final ProductConverter productConverter;
 
-
-    // validate and insert ??? But what happens whn validation fail??
-    // do you return error message to user with error explanation?
-    public Product createProduct(Product product) {
-        validationService.validate(product);
-        repository.insert(product);
-        return product;
+    @Autowired
+    public ProductService(ProductRepository repository,
+                          ProductValidationService validationService, ProductConverter productConverter) {
+        this.repository = repository;
+        this.validationService = validationService;
+        this.productConverter = productConverter;
     }
 
-    public Product findProductByID(Long id) {
-        return repository.findProductById(id);
+    public Long createProduct(ProductDto productDto) {
+        validationService.validate(productDto);
+        Product product = productConverter.convert(productDto);
+        return repository.save(product);
     }
+
+    public ProductDto findProductById(Long id) {
+        return repository.findProductById(id)
+                .map(productConverter::convert)
+                .orElseThrow(() -> new NoSuchElementException("Product not found, id: " + id));
+    }
+
+    public ProductDto findProductByName(String name) {
+        return repository.findProductByName(name)
+                .map(productConverter::convert)
+                .orElseThrow(() -> new NoSuchElementException("Product not found, name: " + name));
+    }
+
+    public void updateProduct(ProductDto productDto) {
+        Product product = productConverter.convert(productDto);
+        repository.update(product);
+    }
+
+    public List<ProductDto> findAll() {
+        return repository.findAll().stream()
+                .map(product -> productConverter.convert(product))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteProduct(Long id) {
+        repository.findProductById(id)
+                .ifPresent(repository::delete);
+    }
+
+
 }
