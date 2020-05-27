@@ -1,7 +1,9 @@
 package com.javaguru.shoppinglist.service;
 
 import com.javaguru.shoppinglist.domain.Product;
-import com.javaguru.shoppinglist.repository.ProductInMemoryRepository;
+import com.javaguru.shoppinglist.mapper.ProductConverter;
+import com.javaguru.shoppinglist.dto.ProductDto;
+import com.javaguru.shoppinglist.repository.ProductRepository;
 import com.javaguru.shoppinglist.service.validation.ProductValidationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,54 +26,68 @@ import static org.mockito.Mockito.when;
 public class ProductServiceTest {
 
     @Mock
-    private ProductInMemoryRepository repository;
+    private ProductRepository repository;
 
     @Mock
     private ProductValidationService validationService;
 
+    @Mock
+    private ProductConverter productConverter;
+
     @Captor
-    private ArgumentCaptor<Product> taskCaptor;
+    private ArgumentCaptor<ProductDto> productCaptor;
 
     private ProductService victim;
 
     @Before
     public void setUp() throws Exception {
-        victim = new ProductService(repository, validationService);
+        victim = new ProductService(repository, validationService, productConverter);
     }
 
     @Test
-    public void shouldCreateTask() {
-        Product product = task();
-        when(repository.save(product)).thenReturn(product);
+    public void shouldCreateProduct() {
+        ProductDto productDto = productDto();
+        Product product = product();
+        when(productConverter.convert(productDto)).thenReturn(product);
+        when(repository.save(product)).thenReturn(product.getId());
 
-        Long result = victim.createProduct(product);
+        Long result = victim.createProduct(productDto);
 
-        verify(validationService).validate(taskCaptor.capture());
-        Product captorResult = taskCaptor.getValue();
+        verify(validationService).validate(productCaptor.capture());
+        ProductDto captorResult = productCaptor.getValue();
 
-        assertThat(captorResult).isEqualTo(product);
+        assertThat(captorResult).isEqualTo(productDto);
         assertThat(product.getId()).isEqualTo(result);
     }
 
     @Test
-    public void shouldFindTaskById() {
-        when(repository.findProductById(1001L)).thenReturn(Optional.ofNullable(task()));
+    public void shouldFindProductById() {
+        when(repository.findProductById(1001L)).thenReturn(Optional.ofNullable(product()));
+        when(productConverter.convert(product())).thenReturn(productDto());
 
-        Product result = victim.findProductById(1001L);
+        ProductDto result = victim.findProductById(1001L);
 
-        assertThat(result).isEqualTo(task());
+        assertThat(result).isEqualTo(productDto());
     }
 
     @Test
-    public void shouldThrowExceptionTaskNotFound() {
+    public void shouldThrowExceptionProductNotFound() {
         when(repository.findProductById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> victim.findProductById(1001L))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Task not found, id: 1001");
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("Product not found, id: 1001");
     }
 
-    private Product task() {
+    private ProductDto productDto() {
+        ProductDto product = new ProductDto();
+        product.setName("TEST_NAME");
+        product.setDescription("TEST_DESCRIPTION");
+        product.setId(1001L);
+        return product;
+    }
+
+    private Product product() {
         Product product = new Product();
         product.setName("TEST_NAME");
         product.setDescription("TEST_DESCRIPTION");

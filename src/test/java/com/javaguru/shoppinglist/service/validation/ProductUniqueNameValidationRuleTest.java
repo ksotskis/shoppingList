@@ -1,7 +1,7 @@
 package com.javaguru.shoppinglist.service.validation;
 
-import com.javaguru.shoppinglist.domain.Product;
-import com.javaguru.shoppinglist.repository.ProductInMemoryRepository;
+import com.javaguru.shoppinglist.dto.ProductDto;
+import com.javaguru.shoppinglist.repository.ProductRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,41 +17,41 @@ import static org.mockito.Mockito.when;
 public class ProductUniqueNameValidationRuleTest {
 
     @Mock
-    private ProductInMemoryRepository taskInMemoryRepository;
+    private ProductRepository hibernateProductRepository;
 
     @Spy
     @InjectMocks
     private ProductUniqueNameValidationRule victim;
 
-    private Product product = task();
+    private ProductDto productDto = productDto();
 
     @Test
     public void shouldThrowException() {
-        when(taskInMemoryRepository.existsByName(product.getName()))
+        when(hibernateProductRepository.existsByName(productDto.getName()))
                 .thenReturn(true);
 
-        assertThatThrownBy(() -> victim.validate(product))
+        assertThatThrownBy(() -> victim.validate(productDto))
                 .isInstanceOf(ProductValidationException.class)
-                .hasMessage("Task name must be unique.");
+                .hasMessage("Product name must be unique.");
 
-        verify(victim).checkNotNull(product);
+        verify(victim).checkNotNull(productDto);
     }
 
     @Test
     public void shouldValidateSuccess() {
-        when(taskInMemoryRepository.existsByName(product.getName()))
+        when(hibernateProductRepository.existsByName(productDto.getName()))
                 .thenReturn(false);
 
-        victim.validate(product);
+        victim.validate(productDto);
 
-        verify(victim).checkNotNull(product);
+        verify(victim).checkNotNull(productDto);
     }
 
-    private Product task() {
-        Product product = new Product();
-        product.setId(123L);
-        product.setDescription("TEST_DESCRIPTION");
-        product.setName("TEST_NAME");
-        return product;
+    private ProductDto productDto() {
+        ProductDto productDto = new ProductDto();
+        productDto.setId(123L);
+        productDto.setDescription("TEST_DESCRIPTION");
+        productDto.setName("TEST_NAME");
+        return productDto;
     }
 }

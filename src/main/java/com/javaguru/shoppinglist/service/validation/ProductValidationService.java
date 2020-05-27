@@ -1,11 +1,11 @@
 package com.javaguru.shoppinglist.service.validation;
 
-import com.javaguru.shoppinglist.domain.Product;
-import org.springframework.stereotype.Component;
+import com.javaguru.shoppinglist.dto.ProductDto;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-@Component
+@Service
 public class ProductValidationService {
 
     private final Set<ProductValidationRule> validationRules;
@@ -14,8 +14,8 @@ public class ProductValidationService {
         this.validationRules = validationRules;
     }
 
-    public void validate(Product product) {
-        validationRules.forEach(s -> s.validate(product));
+    public void validate(ProductDto productDto) {
+        validationRules.forEach(s -> s.validate(productDto));
     }
 
 }

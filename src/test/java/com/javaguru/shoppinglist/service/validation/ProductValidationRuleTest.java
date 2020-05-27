@@ -1,6 +1,6 @@
 package com.javaguru.shoppinglist.service.validation;
 
-import com.javaguru.shoppinglist.domain.Product;
+import com.javaguru.shoppinglist.dto.ProductDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
@@ -19,14 +19,14 @@ public class ProductValidationRuleTest {
     public void shouldThrowValidationException() {
         assertThatThrownBy(() -> victim.checkNotNull(null))
                 .isInstanceOf(ProductValidationException.class)
-                .hasMessage("Task must be not null");
+                .hasMessage("Product must be not null");
     }
 
     @Test
     public void shouldCheckNotNull() {
-        Product product = new Product();
+        ProductDto productDto = new ProductDto();
 
-        victim.checkNotNull(product);
+        victim.checkNotNull(productDto);
     }
 
 }

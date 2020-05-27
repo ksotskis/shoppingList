@@ -1,6 +1,6 @@
 package com.javaguru.shoppinglist.service.validation;
 
-import com.javaguru.shoppinglist.domain.Product;
+import com.javaguru.shoppinglist.dto.ProductDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,40 +23,40 @@ public class ProductValidationServiceTest {
     private ProductUniqueNameValidationRule uniqueNameValidationRule;
 
     @Mock
-    private ProductNameValidationRule taskNameValidationRule;
+    private ProductNameValidationRule productNameValidationRule;
 
     @Captor
-    private ArgumentCaptor<Product> captor;
+    private ArgumentCaptor<ProductDto> captor;
 
     private ProductValidationService victim;
 
-    private Product product = task();
+    private ProductDto productDto = productDto();
 
     @Before
     public void setUp() {
         Set<ProductValidationRule> rules = new HashSet<>();
         rules.add(uniqueNameValidationRule);
-        rules.add(taskNameValidationRule);
+        rules.add(productNameValidationRule);
 
         victim = new ProductValidationService(rules);
     }
 
     @Test
     public void shouldValidate() {
-        victim.validate(product);
+        victim.validate(productDto);
 
         verify(uniqueNameValidationRule).validate(captor.capture());
-        verify(taskNameValidationRule).validate(captor.capture());
+        verify(productNameValidationRule).validate(captor.capture());
 
-        List<Product> resultList = captor.getAllValues();
-        assertThat(resultList).containsOnly(product);
+        List<ProductDto> resultList = captor.getAllValues();
+        assertThat(resultList).containsOnly(productDto);
     }
 
-    private Product task() {
-        Product product = new Product();
-        product.setId(100L);
-        product.setDescription("TEST_DESCRIPTION");
-        product.setName("TEST_NAME");
-        return product;
+    private ProductDto productDto() {
+        ProductDto productDto = new ProductDto();
+        productDto.setId(100L);
+        productDto.setDescription("TEST_DESCRIPTION");
+        productDto.setName("TEST_NAME");
+        return productDto;
     }
 }
